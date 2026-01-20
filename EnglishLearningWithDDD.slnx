@@ -1,5 +1,5 @@
 <Solution>
-  <Folder Name="/Components/">
+  <Folder Name="/Commons/">
     <Project Path="QW.Initializer/QW.Initializer.csproj" Id="daa3b65d-5f46-438d-9789-78868d2c4183" />
     <Project Path="QW.Swagger/QW.Swagger.csproj" Id="0af39204-3e12-4e45-b509-f42a9732de41" />
   </Folder>
