@@ -26,29 +26,33 @@ namespace QW.Swagger
              {
                  options.SwaggerDoc("v1", new OpenApiInfo { Title = jwtTitle, Version = "v1" });
              });
+
+            // 可选的JWT支持
             if (enableJwt)
+            {
+                // swagger JWT支持
+                services.Configure<SwaggerGenOptions>(options =>
+                {
+                    options.AddSecurityDefinition("Authorization", new OpenApiSecurityScheme
+                    {
+                        In = ParameterLocation.Header,
+                        Type = SecuritySchemeType.ApiKey,
+                        Scheme = "Authorization",
+                        Name = "Authorization",
+                        Description = "Authorization header. \r\nExample: 'Bearer 12345abcdef'",
+                    });
+                    options.AddSecurityRequirement(document => new OpenApiSecurityRequirement
+                    {
+                        [new OpenApiSecuritySchemeReference("Bearer", document)] = []
+                    });
+                });
+
                 services.AddJwt(jwtOptions);
+            }
         }
 
         public static void AddJwt(this IServiceCollection services, JwtOptions jwtOptions)
         {
-            // swagger JWT支持
-            services.Configure<SwaggerGenOptions>(options =>
-            {
-                options.AddSecurityDefinition("Authorization", new OpenApiSecurityScheme
-                {
-                    In = ParameterLocation.Header,
-                    Type = SecuritySchemeType.ApiKey,
-                    Scheme = "Authorization",
-                    Name = "Authorization",
-                    Description = "Authorization header. \r\nExample: 'Bearer 12345abcdef'",
-                });
-                options.AddSecurityRequirement(document => new OpenApiSecurityRequirement
-                {
-                    [new OpenApiSecuritySchemeReference("Bearer", document)] = []
-                });
-            });
-
             // JWT认证
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
