@@ -1,0 +1,32 @@
+<Solution>
+  <Folder Name="/Components/">
+    <Project Path="QW.Initializer/QW.Initializer.csproj" Id="daa3b65d-5f46-438d-9789-78868d2c4183" />
+    <Project Path="QW.Swagger/QW.Swagger.csproj" Id="0af39204-3e12-4e45-b509-f42a9732de41" />
+  </Folder>
+  <Folder Name="/FileService/">
+    <Project Path="FileService.Domain/FileService.Domain.csproj" Id="e7fce727-ff2c-4268-a200-7cf7a4494ebb" />
+    <Project Path="FileService.Infrastructure/FileService.Infrastructure.csproj" Id="3a99f8eb-12be-4036-8754-142491dc4841" />
+    <Project Path="FileService.WebAPI/FileService.WebAPI.csproj" Id="7dab2236-b0c5-4dce-b3e1-b8c6eb1bfdae" />
+  </Folder>
+  <Folder Name="/IdentityService/">
+    <Project Path="IdentityService.Domain/IdentityService.Domain.csproj" Id="f1212eeb-ad26-413f-a2c8-3b2ca95e8f11" />
+    <Project Path="IdentityService.Infrastructure/IdentityService.Infrastructure.csproj" Id="721e9694-6633-4a7a-aa6a-e2e32ae8f004" />
+    <Project Path="IdentityService.WebAPI/IdentityService.WebAPI.csproj" Id="54fae540-dd96-46d1-afd4-5d5e40174b93" />
+  </Folder>
+  <Folder Name="/ListeningService/">
+    <Project Path="ListeningService.Admin.WebAPI/ListeningService.Admin.WebAPI.csproj" Id="1f0d16b2-da09-428a-b929-de67e0fdf457" />
+    <Project Path="ListeningService.Domain/ListeningService.Domain.csproj" Id="bd97a3b0-7b74-4d11-87c2-90f6beff845a" />
+    <Project Path="ListeningService.Infrastructure/ListeningService.Infrastructure.csproj" Id="e4022610-f691-4e01-bd8f-8c199d618bba" />
+    <Project Path="ListeningService.Main.WebAPI/ListeningService.Main.WebAPI.csproj" Id="bacb4d7d-473f-48b8-88e3-0e978ada567c" />
+  </Folder>
+  <Folder Name="/MediaEncoderService/">
+    <Project Path="MediaEncoderService.Domain/MediaEncoderService.Domain.csproj" Id="5f515a81-eb36-4f41-a9b6-664ae2e90d12" />
+    <Project Path="MediaEncoderService.Infrastructure/MediaEncoderService.Infrastructure.csproj" Id="4bcdd525-bb4d-4587-9ace-7195583027e6" />
+    <Project Path="MediaEncoderService.WebAPI/MediaEncoderService.WebAPI.csproj" Id="d0c09fd5-4e56-4728-93dd-f9b300816e90" />
+  </Folder>
+  <Folder Name="/SearchService/">
+    <Project Path="SearchService.Domain/SearchService.Domain.csproj" Id="ed49b326-279d-4a6b-8439-7e76163141b7" />
+    <Project Path="SearchService.Infrastructure/SearchService.Infrastructure.csproj" Id="d330671a-4c3b-4e98-aed8-3ffd22725a74" />
+    <Project Path="SearchService.WebAPI/SearchService.WebAPI.csproj" Id="a4aaeee6-d0d7-449c-b10d-b1df5ce8ea91" />
+  </Folder>
+</Solution>

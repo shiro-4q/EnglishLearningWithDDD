@@ -1,0 +1,6 @@
+@ListeningService.Main.WebAPI_HostAddress = http://localhost:5007
+
+GET {{ListeningService.Main.WebAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
