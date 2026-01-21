@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Hosting;
 
-namespace QW.Initializer
+namespace Q.Initializer
 {
     public static class WebApplicationExtensions
     {

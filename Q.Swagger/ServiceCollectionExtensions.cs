@@ -5,7 +5,7 @@ using Microsoft.OpenApi;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Text;
 
-namespace QW.Swagger
+namespace Q.Swagger
 {
     public static class ServiceCollectionExtensions
     {
@@ -17,14 +17,14 @@ namespace QW.Swagger
         /// set up to support authenticated API requests using JWT tokens.</remarks>
         /// <param name="services">The service collection to which Swagger and JWT authentication services will be added.</param>
         /// <param name="jwtOptions">The options used to configure JWT authentication. Required if JWT support is enabled.</param>
-        /// <param name="jwtTitle">The title to display in the generated Swagger documentation.</param>
+        /// <param name="swaggerTitle">The title to display in the generated Swagger documentation.</param>
         /// <param name="enableJwt">true to enable JWT authentication support in Swagger; otherwise, false. The default is true.</param>
-        public static void AddSwagger(this IServiceCollection services, JwtOptions jwtOptions, string jwtTitle, bool enableJwt = true)
+        public static void AddSwagger(this IServiceCollection services, JwtOptions jwtOptions, string swaggerTitle, bool enableJwt = true)
         {
             // 基础Swagger支持
             services.AddSwaggerGen(options =>
              {
-                 options.SwaggerDoc("v1", new OpenApiInfo { Title = jwtTitle, Version = "v1" });
+                 options.SwaggerDoc("v1", new OpenApiInfo { Title = swaggerTitle, Version = "v1" });
              });
 
             // 可选的JWT支持
@@ -51,6 +51,15 @@ namespace QW.Swagger
             }
         }
 
+        /// <summary>
+        /// Adds JWT bearer authentication to the specified service collection using the provided JWT options.
+        /// </summary>
+        /// <remarks>This method configures the authentication middleware to validate JWT tokens according
+        /// to the specified options. It should be called during application startup as part of service
+        /// configuration.</remarks>
+        /// <param name="services">The service collection to which the JWT authentication services are added. This parameter cannot be null.</param>
+        /// <param name="jwtOptions">The options used to configure JWT authentication, including issuer, audience, and signing key. This
+        /// parameter cannot be null.</param>
         public static void AddJwt(this IServiceCollection services, JwtOptions jwtOptions)
         {
             // JWT认证

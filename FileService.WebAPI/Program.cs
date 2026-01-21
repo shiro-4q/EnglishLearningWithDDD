@@ -1,4 +1,4 @@
-using QW.Initializer;
+using Q.Initializer;
 
 var builder = WebApplication.CreateBuilder(args);
 // ×¢²á¶îÍâ·şÎñ

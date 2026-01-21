@@ -7,12 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-	<PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="10.1.0" />
-	<PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="10.1.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\QW.Initializer\QW.Initializer.csproj" />
+    <ProjectReference Include="..\Q.Initializer\Q.Initializer.csproj" />
   </ItemGroup>
 
 </Project>

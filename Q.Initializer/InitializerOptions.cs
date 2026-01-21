@@ -1,4 +1,4 @@
-﻿namespace QW.Initializer
+﻿namespace Q.Initializer
 {
     public class InitializerOptions
     {

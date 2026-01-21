@@ -1,7 +1,9 @@
 <Solution>
   <Folder Name="/Commons/">
-    <Project Path="QW.Initializer/QW.Initializer.csproj" Id="daa3b65d-5f46-438d-9789-78868d2c4183" />
-    <Project Path="QW.Swagger/QW.Swagger.csproj" Id="0af39204-3e12-4e45-b509-f42a9732de41" />
+    <Project Path="Q.Commons/Q.Commons.csproj" Id="06d04ce8-0e07-40b9-89dc-e57a543ab73d" />
+    <Project Path="Q.Infrastructure/Q.Infrastructure.csproj" Id="6da9f296-0104-490f-b41b-6cf9474f77c2" />
+    <Project Path="Q.Initializer/Q.Initializer.csproj" Id="daa3b65d-5f46-438d-9789-78868d2c4183" />
+    <Project Path="Q.Swagger/Q.Swagger.csproj" Id="0af39204-3e12-4e45-b509-f42a9732de41" />
   </Folder>
   <Folder Name="/FileService/">
     <Project Path="FileService.Domain/FileService.Domain.csproj" Id="e7fce727-ff2c-4268-a200-7cf7a4494ebb" />

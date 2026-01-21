@@ -11,7 +11,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\QW.Swagger\QW.Swagger.csproj" />
+	  <ProjectReference Include="..\Q.Infrastructure\Q.Infrastructure.csproj" />
+	  <ProjectReference Include="..\Q.Swagger\Q.Swagger.csproj" />
 	</ItemGroup>
 
 </Project>
