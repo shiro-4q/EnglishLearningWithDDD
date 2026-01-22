@@ -1,26 +1,20 @@
 using Microsoft.AspNetCore.Mvc;
+using Q.Infrastructure.Cache;
 
 namespace FileService.WebAPI.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class WeatherForecastController : ControllerBase
+    public class WeatherForecastController(ICache cache) : ControllerBase
     {
-        private static readonly string[] Summaries =
-        [
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        ];
+        private readonly ICache _cache = cache;
 
         [HttpGet(Name = "GetWeatherForecast")]
-        public IEnumerable<WeatherForecast> Get()
+        public async Task<string> Get()
         {
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
-            {
-                Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                TemperatureC = Random.Shared.Next(-20, 55),
-                Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-            })
-            .ToArray();
+            var value = await _cache.GetOrCreateAsync("testKey", () => Task.FromResult(123));
+            var value2 = _cache.GetOrCreate("testKey2", () => 456);
+            return value + "," + value2;
         }
     }
 }
