@@ -25,6 +25,7 @@ namespace Q.Swagger
             services.AddSwaggerGen(options =>
              {
                  options.SwaggerDoc("v1", new OpenApiInfo { Title = swaggerTitle, Version = "v1" });
+
              });
 
             // 可选的JWT支持
@@ -33,14 +34,17 @@ namespace Q.Swagger
                 // swagger JWT支持
                 services.Configure<SwaggerGenOptions>(options =>
                 {
-                    options.AddSecurityDefinition("Authorization", new OpenApiSecurityScheme
+                    // 定义JWT Bearer认证方案
+                    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                     {
+                        Type = SecuritySchemeType.Http,//http:标准HTTP Authorization, ApiKey 自定义Key
                         In = ParameterLocation.Header,
-                        Type = SecuritySchemeType.ApiKey,
-                        Scheme = "Authorization",
+                        Scheme = "Bearer",//指定HTTP Authorization 的 scheme 名称。实际表现为: Authorization: Bearer {token}
                         Name = "Authorization",
-                        Description = "Authorization header. \r\nExample: 'Bearer 12345abcdef'",
+                        BearerFormat = "JWT",// 可选, 指定token格式，没有实际意义
+                        Description = "Authorization header. Example: 'Authorization: Bearer 12345abcdef'",
                     });
+                    // 将认证方案应用到所有 API，名称需要和上面定义的保持一致
                     options.AddSecurityRequirement(document => new OpenApiSecurityRequirement
                     {
                         [new OpenApiSecuritySchemeReference("Bearer", document)] = []

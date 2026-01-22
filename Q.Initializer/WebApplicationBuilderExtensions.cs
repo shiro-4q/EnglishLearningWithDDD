@@ -19,6 +19,10 @@ namespace Q.Initializer
             services.InitializeModules(assemblies);
 
             // 注册Swagger + JWT
+            //services.Configure<JwtOptions>(configuration.GetSection("JwtOptions")); // 旧的写法，不支持链式调用，不支持Validate
+            services.AddOptions<JwtOptions>().Bind(configuration.GetSection("JwtOptions"))
+                .Validate(o => !string.IsNullOrEmpty(o.SigningKey), "SigningKey is required")
+                .ValidateOnStart();
             JwtOptions jwtOpt = configuration.GetSection("JwtOptions").Get<JwtOptions>()!;
             services.AddSwagger(jwtOpt, initializerOpt.SwaggerTitle);
 
