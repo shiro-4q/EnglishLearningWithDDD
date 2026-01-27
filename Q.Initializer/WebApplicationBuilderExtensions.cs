@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Q.Commons;
+using Q.Infrastructure.EFCore;
 using Q.Swagger;
 using StackExchange.Redis;
 
@@ -18,6 +20,17 @@ namespace Q.Initializer
             var assemblies = ReflectionHelper.GetAllReferencedAssemblies();
             services.InitializeModules(assemblies);
 
+            // 注册EFCore的DbContext
+            var dbConnStr = configuration.GetValue<string>("ConnectionStrings:Default");
+            services.AddAllDbContexts(opt =>
+            {
+                opt.UseMySql(dbConnStr, ServerVersion.AutoDetect(dbConnStr));
+            });
+
+            // 注册身份认证
+            builder.Services.AddAuthentication();
+            builder.Services.AddAuthorization();
+
             // 注册Swagger + JWT
             //services.Configure<JwtOptions>(configuration.GetSection("JwtOptions")); // 旧的写法，不支持链式调用，不支持Validate
             services.AddOptions<JwtOptions>().Bind(configuration.GetSection("JwtOptions"))
@@ -25,6 +38,9 @@ namespace Q.Initializer
                 .ValidateOnStart();
             JwtOptions jwtOpt = configuration.GetSection("JwtOptions").Get<JwtOptions>()!;
             services.AddSwagger(jwtOpt, initializerOpt.SwaggerTitle);
+
+            // 注册MediatR
+            services.AddMediatorR(assemblies);
 
             // 注册Redis
             string redisConnStr = configuration.GetValue<string>("Redis:ConnectionString")!;

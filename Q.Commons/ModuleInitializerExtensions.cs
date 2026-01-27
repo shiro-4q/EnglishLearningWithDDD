@@ -10,6 +10,10 @@ namespace Q.Commons
             var moduleInitializerTypes = assemblies
                 .SelectMany(assembly => assembly.GetTypes())
                 .Where(type => typeof(IModuleInitializer).IsAssignableFrom(type) && !type.IsAbstract);
+
+            var types2 = AppDomain.CurrentDomain.GetAssemblies()
+                 .SelectMany(assembly => assembly.GetTypes())
+                .Where(type => typeof(IModuleInitializer).IsAssignableFrom(type) && !type.IsAbstract);
             foreach (var type in moduleInitializerTypes)
             {
                 var initializer = (IModuleInitializer)Activator.CreateInstance(type)! ?? throw new ApplicationException($"Cannot create ${type}"); ;
