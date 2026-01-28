@@ -21,7 +21,7 @@ namespace Q.Commons.ModuleInitializer
         public static IServiceCollection InitializeModules(this IServiceCollection services)
         {
             var moduleInitializerTypes = AppDomain.CurrentDomain.GetAssemblies()
-                 .SelectMany(assembly => assembly.GetTypes())
+                .SelectMany(assembly => assembly.GetTypes())
                 .Where(type => typeof(IModuleInitializer).IsAssignableFrom(type) && !type.IsAbstract);
             foreach (var type in moduleInitializerTypes)
             {
