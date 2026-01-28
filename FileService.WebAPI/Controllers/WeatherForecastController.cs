@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Q.Infrastructure.Cache;
 using Q.Infrastructure.EFCore;
-using Q.Swagger;
+using Q.Swagger.Jwt;
 using System.Security.Claims;
 
 namespace FileService.WebAPI.Controllers

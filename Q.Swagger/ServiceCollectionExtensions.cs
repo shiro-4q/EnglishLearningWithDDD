@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
+using Q.Swagger.Jwt;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Text;
 
@@ -23,10 +24,9 @@ namespace Q.Swagger
         {
             // 基础Swagger支持
             services.AddSwaggerGen(options =>
-             {
-                 options.SwaggerDoc("v1", new OpenApiInfo { Title = swaggerTitle, Version = "v1" });
-
-             });
+            {
+                options.SwaggerDoc("v1", new OpenApiInfo { Title = swaggerTitle, Version = "v1" });
+            });
 
             // 可选的JWT支持
             if (enableJwt)

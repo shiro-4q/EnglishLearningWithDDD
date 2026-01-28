@@ -1,4 +1,4 @@
-﻿namespace Q.DomainCommons
+﻿namespace Q.DomainCommons.Models
 {
     public interface IHasModificationTime
     {

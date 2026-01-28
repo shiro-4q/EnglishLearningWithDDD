@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Q.Commons;
+using Q.Commons.ModuleInitializer;
+using Q.Swagger.Jwt;
 
 namespace Q.Swagger
 {

@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Q.DomainCommons;
+using Q.DomainCommons.Models;
 using System.Reflection;
 
 namespace Q.Infrastructure.EFCore

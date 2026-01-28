@@ -2,9 +2,10 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Q.Commons;
+using Q.Commons.ModuleInitializer;
 using Q.Infrastructure.EFCore;
 using Q.Swagger;
+using Q.Swagger.Jwt;
 using StackExchange.Redis;
 
 namespace Q.Initializer
@@ -17,8 +18,7 @@ namespace Q.Initializer
             IServiceCollection services = builder.Services;
 
             // 注册各模块自己的服务
-            var assemblies = ReflectionHelper.GetAllReferencedAssemblies();
-            services.InitializeModules(assemblies);
+            services.InitializeModules();
 
             // 注册EFCore的DbContext
             var dbConnStr = configuration.GetValue<string>("ConnectionStrings:Default");
@@ -40,7 +40,7 @@ namespace Q.Initializer
             services.AddSwagger(jwtOpt, initializerOpt.SwaggerTitle);
 
             // 注册MediatR
-            services.AddMediatorR(assemblies);
+            services.AddMediatorR();
 
             // 注册Redis
             string redisConnStr = configuration.GetValue<string>("Redis:ConnectionString")!;

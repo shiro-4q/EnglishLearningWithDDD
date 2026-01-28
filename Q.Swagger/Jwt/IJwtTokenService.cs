@@ -1,6 +1,6 @@
 ﻿using System.Security.Claims;
 
-namespace Q.Swagger
+namespace Q.Swagger.Jwt
 {
     public interface IJwtTokenService
     {

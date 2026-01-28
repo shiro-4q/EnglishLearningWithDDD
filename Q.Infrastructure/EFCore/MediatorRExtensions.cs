@@ -1,18 +1,17 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Q.DomainCommons;
-using System.Reflection;
+using Q.DomainCommons.Models;
 
 namespace Q.Infrastructure.EFCore
 {
     public static class MediatorRExtensions
     {
-        public static IServiceCollection AddMediatorR(this IServiceCollection services, IEnumerable<Assembly> assemblies)
+        public static IServiceCollection AddMediatorR(this IServiceCollection services)
         {
             return services.AddMediatR(cfg =>
             {
-                cfg.RegisterServicesFromAssemblies(assemblies.ToArray());
+                cfg.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
             });
         }
 

@@ -4,7 +4,7 @@ using System.Reflection;
 using System.Reflection.Metadata;
 using System.Reflection.PortableExecutable;
 
-namespace Q.Commons;
+namespace Q.Commons.Helper;
 
 public static class ReflectionHelper
 {

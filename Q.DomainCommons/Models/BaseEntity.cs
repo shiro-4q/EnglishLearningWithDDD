@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Q.DomainCommons
+namespace Q.DomainCommons.Models
 {
     public class BaseEntity : IDomainEvents
     {

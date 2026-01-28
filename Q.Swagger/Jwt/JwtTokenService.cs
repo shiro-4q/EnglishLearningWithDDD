@@ -4,7 +4,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace Q.Swagger
+namespace Q.Swagger.Jwt
 {
     public class JwtTokenService(IOptions<JwtOptions> jwtOpt) : IJwtTokenService
     {

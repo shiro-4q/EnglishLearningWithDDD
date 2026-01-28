@@ -1,5 +1,4 @@
-﻿
-namespace Q.DomainCommons
+﻿namespace Q.DomainCommons.Models
 {
     public class AggregateRootEntity : BaseEntity, IAggregateRoot, ISoftDelete, IHasCreationTime, IHasDeletionTime, IHasModificationTime
     {

@@ -1,4 +1,4 @@
-﻿namespace Q.Swagger
+﻿namespace Q.Swagger.Jwt
 {
     public class JwtOptions
     {
