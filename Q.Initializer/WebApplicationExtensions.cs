@@ -15,6 +15,7 @@ namespace Q.Initializer
                     options.SwaggerEndpoint("v1/swagger.json", initializerOptions.SwaggerTitle);
                 });
             }
+            app.UseCors();
             app.UseAuthentication();
             app.UseAuthorization();
             return app;
