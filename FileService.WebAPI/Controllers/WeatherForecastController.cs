@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Q.Infrastructure.Cache;
 using Q.Infrastructure.EFCore;
 using Q.Swagger.Jwt;
+using Serilog;
 using System.Security.Claims;
 
 namespace FileService.WebAPI.Controllers
@@ -44,6 +45,15 @@ namespace FileService.WebAPI.Controllers
         public string GetWithEFCore()
         {
             return _dbContext.GetType().ToString();
+        }
+
+        [HttpGet]
+        public string GetWithLogger()
+        {
+            Log.Information("Starting web application");
+            Log.Information("123");
+            Log.Warning("ÄãºÃ {user} ÎÒ{age}", "qw", 14);
+            return "success";
         }
     }
 }

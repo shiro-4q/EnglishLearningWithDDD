@@ -6,6 +6,7 @@ using Q.Commons.ModuleInitializer;
 using Q.Infrastructure.EFCore;
 using Q.Swagger;
 using Q.Swagger.Jwt;
+using Serilog;
 using StackExchange.Redis;
 
 namespace Q.Initializer
@@ -41,6 +42,29 @@ namespace Q.Initializer
 
             // 注册MediatR
             services.AddMediatorR();
+
+            // 注册CORS
+            var corsOrigins = configuration.GetSection("Cors:Origins").Get<string[]>() ?? [];
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(builder =>
+                {
+                    builder.WithOrigins(corsOrigins)
+                           .AllowAnyHeader()
+                           .AllowAnyMethod()
+                           .AllowCredentials();
+                });
+            });
+
+            // 注册Serilog
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Debug()
+                .Enrich.FromLogContext()// 添加上下文增强
+                .WriteTo.Console()
+                //.WriteTo.Console(new JsonFormatter())// 使用JSON 格式
+                .WriteTo.File(initializerOpt.LogFilePath)
+                .CreateLogger();
+            services.AddSerilog();
 
             // 注册Redis
             string redisConnStr = configuration.GetValue<string>("Redis:ConnectionString")!;
