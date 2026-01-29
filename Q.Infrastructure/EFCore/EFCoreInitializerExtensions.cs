@@ -1,15 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
 
 namespace Q.Infrastructure.EFCore
 {
     public static class EFCoreInitializerExtensions
     {
-        public static IServiceCollection AddAllDbContexts(this IServiceCollection services, Action<DbContextOptionsBuilder>? optionsAction)
+        public static IServiceCollection AddAllDbContexts(this IServiceCollection services, Action<DbContextOptionsBuilder>? optionsAction, IEnumerable<Assembly> assemblies)
         {
             // 获取所有继承自BaseDbContext的类型
-            var dbContextTypes = AppDomain.CurrentDomain
-                .GetAssemblies()
+            var dbContextTypes = assemblies
                 .SelectMany(a => a.GetTypes())
                 .Where(t =>
                     t is not null &&

@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Q.Commons.Helper;
 using Q.Commons.ModuleInitializer;
 using Q.Infrastructure.EFCore;
 using Q.Swagger;
@@ -18,15 +19,16 @@ namespace Q.Initializer
             ConfigurationManager configuration = builder.Configuration;
             IServiceCollection services = builder.Services;
 
+            var assemblies = ReflectionHelper.GetAllReferencedAssemblies();
             // 注册各模块自己的服务
-            services.InitializeModules();
+            services.InitializeModules(assemblies);
 
             // 注册EFCore的DbContext
             var dbConnStr = configuration.GetValue<string>("ConnectionStrings:Default");
             services.AddAllDbContexts(opt =>
             {
                 opt.UseMySql(dbConnStr, ServerVersion.AutoDetect(dbConnStr));
-            });
+            }, assemblies);
 
             // 注册身份认证
             builder.Services.AddAuthentication();

@@ -1,7 +1,8 @@
+using FileService.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Q.EventBus;
 using Q.Infrastructure.Cache;
-using Q.Infrastructure.EFCore;
 using Q.Swagger.Jwt;
 using Serilog;
 using System.Security.Claims;
@@ -10,11 +11,12 @@ namespace FileService.WebAPI.Controllers
 {
     [ApiController]
     [Route("[controller]/[action]")]
-    public class WeatherForecastController(ICache cache, IJwtTokenService jwtTokenService, BaseDbContext dbContext) : ControllerBase
+    public class WeatherForecastController(ICache cache, IJwtTokenService jwtTokenService, FSDbContext dbContext, IEventBus eventBus) : ControllerBase
     {
         private readonly ICache _cache = cache;
         private readonly IJwtTokenService _jwtTokenService = jwtTokenService;
-        private readonly BaseDbContext _dbContext = dbContext;
+        private readonly FSDbContext _dbContext = dbContext;
+        private readonly IEventBus _eventBus = eventBus;
 
         [HttpGet]
         public async Task<string> BuildToken()
@@ -44,7 +46,7 @@ namespace FileService.WebAPI.Controllers
         [HttpGet]
         public string GetWithEFCore()
         {
-            return _dbContext.GetType().ToString();
+            return "数量：" + _dbContext.Persons.Count();
         }
 
         [HttpGet]
@@ -53,6 +55,13 @@ namespace FileService.WebAPI.Controllers
             Log.Information("Starting web application");
             Log.Information("123");
             Log.Warning("你好 {user} 我{age}", "qw", 14);
+            return "success";
+        }
+
+        [HttpGet]
+        public string Publish()
+        {
+            _eventBus.Publish("test.event", new { Name = "Test Event", Timestamp = DateTime.UtcNow });
             return "success";
         }
     }

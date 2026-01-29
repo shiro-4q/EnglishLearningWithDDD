@@ -2,6 +2,7 @@
   <Folder Name="/Commons/">
     <Project Path="Q.Commons/Q.Commons.csproj" Id="06d04ce8-0e07-40b9-89dc-e57a543ab73d" />
     <Project Path="Q.DomainCommons/Q.DomainCommons.csproj" Id="302d6f2b-44bb-41c1-906c-52451cf66859" />
+    <Project Path="Q.EventBus/Q.EventBus.csproj" Id="a207931e-541b-4f52-a3b4-3965fae9a4df" />
     <Project Path="Q.Infrastructure/Q.Infrastructure.csproj" Id="6da9f296-0104-490f-b41b-6cf9474f77c2" />
     <Project Path="Q.Initializer/Q.Initializer.csproj" Id="daa3b65d-5f46-438d-9789-78868d2c4183" />
     <Project Path="Q.Swagger/Q.Swagger.csproj" Id="0af39204-3e12-4e45-b509-f42a9732de41" />

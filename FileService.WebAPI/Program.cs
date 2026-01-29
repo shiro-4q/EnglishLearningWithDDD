@@ -1,3 +1,4 @@
+using FileService.Infrastructure.Persistence;
 using Q.Initializer;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,6 +10,25 @@ var initializerOptions = new InitializerOptions
 builder.ConfigureExtraServices(initializerOptions);
 // Add services to the container.
 builder.Services.AddControllers();
+
+builder.Services.AddCap(x =>
+{
+    // Outbox + 事务控制
+    x.UseEntityFramework<FSDbContext>();
+
+    // EventBus 使用 RabbitMQ
+    x.UseRabbitMQ(opt =>
+    {
+        opt.HostName = "localhost";      // RabbitMQ 服务器地址
+        opt.UserName = "rmquser";           // 登录用户名
+        opt.Password = "rmqpassword";       // 登录密码
+        opt.Port = 5672;                 // RabbitMQ 服务端口（5672 是默认 AMQP 端口）
+    });
+
+    // 重试配置
+    x.FailedRetryCount = 5;
+    x.FailedRetryInterval = 30;
+});
 
 var app = builder.Build();
 

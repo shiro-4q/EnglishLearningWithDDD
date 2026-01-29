@@ -13,6 +13,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\Q.EventBus\Q.EventBus.csproj" />
 	  <ProjectReference Include="..\Q.Infrastructure\Q.Infrastructure.csproj" />
 	  <ProjectReference Include="..\Q.Swagger\Q.Swagger.csproj" />
 	</ItemGroup>

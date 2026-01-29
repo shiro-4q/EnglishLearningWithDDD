@@ -17,18 +17,5 @@ namespace Q.Commons.ModuleInitializer
             }
             return services;
         }
-
-        public static IServiceCollection InitializeModules(this IServiceCollection services)
-        {
-            var moduleInitializerTypes = AppDomain.CurrentDomain.GetAssemblies()
-                .SelectMany(assembly => assembly.GetTypes())
-                .Where(type => typeof(IModuleInitializer).IsAssignableFrom(type) && !type.IsAbstract);
-            foreach (var type in moduleInitializerTypes)
-            {
-                var initializer = (IModuleInitializer)Activator.CreateInstance(type)! ?? throw new ApplicationException($"Cannot create ${type}"); ;
-                initializer.Initialize(services);
-            }
-            return services;
-        }
     }
 }

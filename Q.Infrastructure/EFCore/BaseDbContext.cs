@@ -5,9 +5,9 @@ using System.Reflection;
 
 namespace Q.Infrastructure.EFCore
 {
-    public class BaseDbContext(IMediator mediator) : DbContext
+    public class BaseDbContext(DbContextOptions options, IMediator? mediator) : DbContext(options)
     {
-        private readonly IMediator _mediator = mediator;
+        private readonly IMediator? _mediator = mediator;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
