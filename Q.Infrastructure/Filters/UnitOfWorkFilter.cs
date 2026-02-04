@@ -24,8 +24,7 @@ namespace Q.Infrastructure.Filters
             var uowAttribute = GetUnitOfWorkAttribute(context.ActionDescriptor);
             if (uowAttribute == null || uowAttribute.DbContextTypes.Length == 0) return;
             using TransactionScope txScope = new(TransactionScopeAsyncFlowOption.Enabled);
-            // ToList的简化写法
-            List<DbContext?> dbContextList = [.. uowAttribute.DbContextTypes.Select(t => context.HttpContext.RequestServices.GetService(t) as DbContext)];
+            List<DbContext?> dbContextList = [.. uowAttribute.DbContextTypes.Select(t => context.HttpContext.RequestServices.GetService(t) as DbContext)];// ToList的简化写法
             foreach (var dbContext in dbContextList)
             {
                 if (dbContext is not null)
