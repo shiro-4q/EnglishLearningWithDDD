@@ -1,10 +1,13 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using FluentValidation;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Q.Commons.Helper;
 using Q.Commons.ModuleInitializer;
 using Q.Infrastructure.EFCore;
+using Q.Infrastructure.Filters;
 using Q.Swagger;
 using Q.Swagger.Jwt;
 using Serilog;
@@ -67,6 +70,16 @@ namespace Q.Initializer
                 .WriteTo.File(initializerOpt.LogFilePath)
                 .CreateLogger();
             services.AddSerilog();
+
+            // 注册FluentValidation
+            services.AddValidatorsFromAssemblies(assemblies);
+
+            // 注册全局过滤器
+            services.Configure<MvcOptions>(options =>
+            {
+                options.Filters.Add<AutoValidationFilter>();
+                options.Filters.Add<UnitOfWorkFilter>();
+            });
 
             // 注册Redis
             string redisConnStr = configuration.GetValue<string>("Redis:ConnectionString")!;

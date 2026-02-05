@@ -12,5 +12,6 @@
 
 	<ItemGroup>
 	  <PackageReference Include="AsmResolver.DotNet" Version="5.5.1" />
+	  <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.1" />
 	</ItemGroup>
 </Project>
