@@ -1,18 +1,21 @@
-﻿using FileService.Infrastructure.Persistence;
-using Microsoft.EntityFrameworkCore.Design;
-using Microsoft.Extensions.Options;
-using Q.Infrastructure.EFCore;
+﻿using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.Extensions.Configuration;
 using Q.Initializer;
 
-namespace FileService.WebAPI;
+namespace FileService.Infrastructure.Persistence;
 
-public class DesignTimeDbContextFactory(IOptionsSnapshot<EFCoreOptions> optionsSnapshot) : IDesignTimeDbContextFactory<FSDbContext>
+public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<FSDbContext>
 {
-    private readonly EFCoreOptions _eFCoreOptions = optionsSnapshot.Value;
-
     public FSDbContext CreateDbContext(string[] args)
     {
-        var optionsBuilder = DbContextOptionsBuilderFactory.Create<FSDbContext>(_eFCoreOptions.ConnectionString);
+        var configuration = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json")
+            .Build();
+
+        var connectionString = configuration.GetConnectionString("Default");
+
+        var optionsBuilder = DbContextOptionsBuilderFactory.Create<FSDbContext>(connectionString!);
         return new FSDbContext(optionsBuilder.Options, null);
     }
 }
