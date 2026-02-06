@@ -33,6 +33,11 @@ namespace Q.Initializer
 
             // 注册EFCore的DbContext
             var dbConnStr = configuration.GetValue<string>("ConnectionStrings:Default");
+            services.AddOptions<EFCoreOptions>()
+                .Configure<IConfiguration>((options, configuration) =>
+                {
+                    options.ConnectionString = dbConnStr!;
+                });
             services.AddAllDbContexts(opt =>
             {
                 opt.UseMySql(dbConnStr, ServerVersion.AutoDetect(dbConnStr));

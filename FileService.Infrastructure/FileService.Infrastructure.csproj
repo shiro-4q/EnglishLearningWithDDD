@@ -14,6 +14,11 @@
 	<ItemGroup>
 		<ProjectReference Include="..\FileService.Domain\FileService.Domain.csproj" />
 		<ProjectReference Include="..\Q.Infrastructure\Q.Infrastructure.csproj" />
+		<ProjectReference Include="..\Q.Initializer\Q.Initializer.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Migrations\" />
 	</ItemGroup>
 
 </Project>

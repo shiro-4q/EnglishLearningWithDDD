@@ -1,5 +1,5 @@
-﻿using FileService.Domain.Services;
-using FileService.Infrastructure.Repositories;
+﻿using FileService.Domain.Repositories;
+using FileService.Domain.Services;
 using FileService.WebAPI.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using Q.Commons.Helpers;
@@ -9,10 +9,10 @@ namespace FileService.WebAPI.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    public class UploadController(FSDomainService fSDomainService, FSRepository fSRepository) : ControllerBase
+    public class UploadController(FSDomainService fSDomainService, IFSRepository fSRepository) : ControllerBase
     {
         private readonly FSDomainService _fSDomainService = fSDomainService;
-        private readonly FSRepository _fSRepository = fSRepository;
+        private readonly IFSRepository _fSRepository = fSRepository;
 
         /// <summary>
         /// 检查文件是否已存在
@@ -20,7 +20,7 @@ namespace FileService.WebAPI.Controllers
         /// <param name="request">上传文件请求DTO</param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<IActionResult> IsFileExsit(UploadRequest request)
+        public async Task<IActionResult> FileExists(UploadRequest request)
         {
             var file = request.File;
             using var stream = file.OpenReadStream();
