@@ -9,7 +9,6 @@ namespace FileService.WebAPI.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    [UnitOfWork]
     public class UploadController(FSDomainService fSDomainService, FSRepository fSRepository) : ControllerBase
     {
         private readonly FSDomainService _fSDomainService = fSDomainService;
@@ -36,6 +35,7 @@ namespace FileService.WebAPI.Controllers
         /// <returns></returns>
         [HttpPost]
         [RequestSizeLimit(60_000_000)]
+        [UnitOfWork]
         public async Task<ActionResult<Uri>> Upload(UploadRequest request, CancellationToken cancellationToken = default)
         {
             var file = request.File;
