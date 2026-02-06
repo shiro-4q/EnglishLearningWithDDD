@@ -17,7 +17,7 @@ namespace FileService.WebAPI.Controllers
         /// <summary>
         /// 检查文件是否已存在
         /// </summary>
-        /// <param name="formFile"></param>
+        /// <param name="request">上传文件请求DTO</param>
         /// <returns></returns>
         [HttpGet]
         public async Task<IActionResult> IsFileExsit(UploadRequest request)
@@ -31,7 +31,7 @@ namespace FileService.WebAPI.Controllers
         /// <summary>
         /// 上传文件
         /// </summary>
-        /// <param name="formFile"></param>
+        /// <param name="request">上传文件请求DTO</param>
         /// <returns></returns>
         [HttpPost]
         [RequestSizeLimit(60_000_000)]
