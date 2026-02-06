@@ -36,7 +36,7 @@ namespace FileService.WebAPI.Controllers
         [HttpPost]
         [RequestSizeLimit(60_000_000)]
         [UnitOfWork]
-        public async Task<ActionResult<Uri>> Upload(UploadRequest request, CancellationToken cancellationToken = default)
+        public async Task<ActionResult<Uri>> Upload([FromForm] UploadRequest request, CancellationToken cancellationToken = default)
         {
             var file = request.File;
             if (file == null || file.Length == 0)
