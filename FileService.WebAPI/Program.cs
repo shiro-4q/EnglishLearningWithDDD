@@ -1,3 +1,4 @@
+using FileService.Infrastructure.Adapters;
 using FileService.Infrastructure.Persistence;
 using Q.Initializer;
 
@@ -20,8 +21,8 @@ builder.Services.AddCap(x =>
     x.UseRabbitMQ(opt =>
     {
         opt.HostName = "localhost";      // RabbitMQ 服务器地址
-        opt.UserName = "rmquser";           // 登录用户名
-        opt.Password = "rmqpassword";       // 登录密码
+        opt.UserName = "rmquser";        // 登录用户名
+        opt.Password = "rmqpassword";    // 登录密码
         opt.Port = 5672;                 // RabbitMQ 服务端口（5672 是默认 AMQP 端口）
     });
 
@@ -29,6 +30,9 @@ builder.Services.AddCap(x =>
     x.FailedRetryCount = 5;
     x.FailedRetryInterval = 30;
 });
+
+// 配置本地存储选项
+builder.Services.AddOptions<LocalStorageOptions>().Bind(builder.Configuration.GetSection("LocalStorageOptions"));
 
 var app = builder.Build();
 

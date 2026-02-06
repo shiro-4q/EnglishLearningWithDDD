@@ -16,10 +16,4 @@
 		<ProjectReference Include="..\Q.Infrastructure\Q.Infrastructure.csproj" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <Folder Include="Repositories\" />
-	  <Folder Include="Adapters\" />
-	  <Folder Include="Configs\" />
-	</ItemGroup>
-
 </Project>

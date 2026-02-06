@@ -46,7 +46,7 @@ namespace FileService.WebAPI.Controllers
         [HttpGet]
         public string GetWithEFCore()
         {
-            return "数量：" + _dbContext.Persons.Count();
+            return "数量：" + _dbContext.UploadItems.Count();
         }
 
         [HttpGet]

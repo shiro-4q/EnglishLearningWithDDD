@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Q.Commons;
 using Q.Commons.Helper;
 using Q.Commons.ModuleInitializer;
 using Q.Infrastructure.EFCore;
@@ -21,6 +22,10 @@ namespace Q.Initializer
         {
             ConfigurationManager configuration = builder.Configuration;
             IServiceCollection services = builder.Services;
+
+            // 初始化BaseConfig
+            var environment = builder.Environment;
+            BaseConfig.Init(environment.ContentRootPath, environment.WebRootPath);
 
             var assemblies = ReflectionHelper.GetAllReferencedAssemblies();
             // 注册各模块自己的服务

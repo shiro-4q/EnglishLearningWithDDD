@@ -9,9 +9,10 @@ namespace FileService.Domain.Interfaces
         /// <summary>
         /// 存储上传文件
         /// </summary>
-        /// <param name="key">存储路径</param>
+        /// <param name="key">文件的key(一般是路径的一部分)</param>
         /// <param name="stream">文件流</param>
+        /// <param name="cancellation">取消</param>
         /// <returns>存储文件的可访问路径</returns>
-        Task<Uri> SaveAsync(string key, Stream stream);
+        Task<Uri> SaveAsync(string key, Stream stream, CancellationToken cancellation = default);
     }
 }

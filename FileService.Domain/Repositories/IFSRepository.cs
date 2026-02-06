@@ -2,10 +2,12 @@
 
 namespace FileService.Domain.Repositories
 {
-    public interface IFileRepository
+    public interface IFSRepository
     {
-        Task<UploadItem> FindAsync(long fileSize, string fileSHA256Hash);
+        Task<UploadItem?> FindAsync(long fileSize, string fileSHA256Hash);
 
         Task AddAsync(UploadItem uploadItem);
+
+        Task SaveChangesAsync();
     }
 }
