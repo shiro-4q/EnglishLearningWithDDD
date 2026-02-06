@@ -7,7 +7,7 @@ using Q.Infrastructure.Filters;
 
 namespace FileService.WebAPI.Controllers
 {
-    [Route("api/[controller]/[cation]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     [UnitOfWork]
     public class UploadController(FSDomainService fSDomainService, FSRepository fSRepository) : ControllerBase
