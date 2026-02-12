@@ -2,6 +2,6 @@
 {
     public class LocalStorageOptions
     {
-        public string WorkingDirectory { get; } = string.Empty;
+        public string WorkingDirectory { get; set; } = string.Empty;
     }
 }

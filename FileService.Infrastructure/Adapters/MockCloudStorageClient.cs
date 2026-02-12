@@ -13,7 +13,7 @@ namespace FileService.Infrastructure.Adapters
 
         public async Task<Uri> SaveAsync(string key, Stream stream, CancellationToken cancellation = default)
         {
-            var fullPath = Path.Combine(BaseConfig.ContentRootPath, key);
+            var fullPath = Path.Combine(BaseConfig.WebRootPath, key);
             var fullDir = Path.GetDirectoryName(fullPath);
             if (!Directory.Exists(fullDir))
                 Directory.CreateDirectory(fullDir!);

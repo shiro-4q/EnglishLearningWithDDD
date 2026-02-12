@@ -1,32 +1,16 @@
-﻿using FileService.Domain.Repositories;
-using FileService.Domain.Services;
+﻿using FileService.Domain.Services;
+using FileService.Infrastructure.Persistence;
 using FileService.WebAPI.DTOs;
 using Microsoft.AspNetCore.Mvc;
-using Q.Commons.Helpers;
 using Q.Infrastructure.Filters;
 
 namespace FileService.WebAPI.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    public class UploadController(FSDomainService fSDomainService, IFSRepository fSRepository) : ControllerBase
+    public class UploadController(FSDomainService fSDomainService) : ControllerBase
     {
         private readonly FSDomainService _fSDomainService = fSDomainService;
-        private readonly IFSRepository _fSRepository = fSRepository;
-
-        /// <summary>
-        /// 检查文件是否已存在
-        /// </summary>
-        /// <param name="request">上传文件请求DTO</param>
-        /// <returns></returns>
-        [HttpGet]
-        public async Task<IActionResult> FileExists(UploadRequest request)
-        {
-            var file = request.File;
-            using var stream = file.OpenReadStream();
-            var streamHash = HashHelper.ComputeSha256Hash(stream);
-            return Ok(_fSRepository.FindAsync(stream.Length, streamHash) != null);
-        }
 
         /// <summary>
         /// 上传文件
@@ -35,7 +19,7 @@ namespace FileService.WebAPI.Controllers
         /// <returns></returns>
         [HttpPost]
         [RequestSizeLimit(60_000_000)]
-        [UnitOfWork]
+        [UnitOfWork(typeof(FSDbContext))]
         public async Task<ActionResult<Uri>> Upload([FromForm] UploadRequest request, CancellationToken cancellationToken = default)
         {
             var file = request.File;

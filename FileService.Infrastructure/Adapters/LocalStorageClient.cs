@@ -14,6 +14,8 @@ namespace FileService.Infrastructure.Adapters
 
         public async Task<Uri> SaveAsync(string key, Stream stream, CancellationToken cancellation = default)
         {
+            if (string.IsNullOrWhiteSpace(_localStorageOptions.WorkingDirectory))
+                throw new ApplicationException("工作目录不能为空");
             var fullPath = Path.Combine(_localStorageOptions.WorkingDirectory, key);
             var fullDir = Path.GetDirectoryName(fullPath);
             if (!Directory.Exists(fullDir))
