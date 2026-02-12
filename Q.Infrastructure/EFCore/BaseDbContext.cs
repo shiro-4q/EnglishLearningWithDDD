@@ -1,19 +1,12 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Q.DomainCommons.Models;
-using System.Reflection;
 
 namespace Q.Infrastructure.EFCore
 {
     public class BaseDbContext(DbContextOptions options, IMediator? mediator) : DbContext(options)
     {
         private readonly IMediator? _mediator = mediator;
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            base.OnModelCreating(modelBuilder);
-            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetCallingAssembly());
-        }
 
         public override int SaveChanges()
         {
