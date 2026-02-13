@@ -13,7 +13,7 @@ namespace IdentityService.Domain.Services
             var user = await idRepository.FindByPhoneNumAsync(phoneNum);
             if (user == null)
                 return (SignInResult.Failed, null);
-            var result = await idRepository.VerifyPasswordAsync(user, password);
+            var result = await CheckForLogin(user, password);
             if (result.Succeeded)
             {
                 var token = await BuildTokenByUser(user);
@@ -30,7 +30,7 @@ namespace IdentityService.Domain.Services
             var user = await idRepository.FindByUerNameAsync(userName);
             if (user == null)
                 return (SignInResult.Failed, null);
-            var result = await idRepository.VerifyPasswordAsync(user, password);
+            var result = await CheckForLogin(user, password);
             if (result.Succeeded)
             {
                 var token = await BuildTokenByUser(user);
@@ -42,15 +42,6 @@ namespace IdentityService.Domain.Services
             }
         }
 
-        public async Task<IdentityResult> ChangePasswordAsync(Guid userId, string password)
-        {
-            var user = await idRepository.FindByIdAsync(userId);
-            if (user == null)
-                return IdentityResult.Failed(new IdentityError { Description = "用户不存在" });
-            await idRepository.UpdatePasswordAsync(user, password);
-            return IdentityResult.Success;
-        }
-
         #region 生成Token
         private async Task<string> BuildTokenByUser(User user)
         {
@@ -59,11 +50,28 @@ namespace IdentityService.Domain.Services
                 new(ClaimTypes.NameIdentifier, user.Id.ToString()),
             };
             var roleList = await idRepository.GetRolesAsync(user);
-            roleList.ToList().ForEach(role =>
+            foreach (var role in roleList)
             {
-                claims.Add(new Claim(ClaimTypes.Role, role.Name!));
-            });
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
             return jwtTokenService.BuildToken(claims);
+        }
+        #endregion
+
+        #region 登录相关检查
+        private async Task<SignInResult> CheckForLogin(User user, string password)
+        {
+            if (await idRepository.IsLockedOutAsync(user))
+                return SignInResult.LockedOut;
+            if (await idRepository.CheckPasswordAsync(user, password))
+                return SignInResult.Success;
+            else
+            {
+                var result = await idRepository.AccessFailedAsync(user);
+                if (!result.Succeeded)
+                    throw new ApplicationException("AccessFailed failed");
+                return SignInResult.Failed;
+            }
         }
         #endregion
     }

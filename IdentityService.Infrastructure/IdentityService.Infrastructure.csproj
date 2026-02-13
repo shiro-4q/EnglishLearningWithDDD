@@ -13,12 +13,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Folder Include="Services\" />
-		<Folder Include="Repositories\" />
-		<Folder Include="Persistence\" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<ProjectReference Include="..\IdentityService.Domain\IdentityService.Domain.csproj" />
 		<ProjectReference Include="..\Q.Infrastructure\Q.Infrastructure.csproj" />
 	</ItemGroup>

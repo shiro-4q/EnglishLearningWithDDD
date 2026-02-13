@@ -8,10 +8,12 @@ namespace IdentityService.Domain.Repositories
         Task<User?> FindByUerNameAsync(string userName);
         Task<User?> FindByPhoneNumAsync(string phoneNum);
         Task<User?> FindByIdAsync(Guid id);
-        Task<IdentityResult> CreateUserAsync(Guid id, string password);
-        Task UpdatePasswordAsync(User user, string newPassword);
-        Task<SignInResult> VerifyPasswordAsync(User user, string passwordHash);
-        Task<IEnumerable<Role>> GetRolesAsync(User user);
+        Task<IdentityResult> CreateUserAsync(User user, string password);
+        Task<(IdentityResult, User?, string? password)> ResetPasswordAsync(Guid id, string? password = null);
+        Task<IdentityResult> ChangePasswordAsync(Guid id, string password);
+        Task<bool> CheckPasswordAsync(User user, string password);
+        Task<bool> IsLockedOutAsync(User user);
+        Task<IList<string>> GetRolesAsync(User user);
         Task<IdentityResult> AccessFailedAsync(User user);
         Task<IdentityResult> AddToRoleAsync(User user, string role);
     }
