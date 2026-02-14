@@ -10,6 +10,7 @@ namespace IdentityService.Domain.Repositories
         Task<User?> FindByIdAsync(Guid id);
         Task<IdentityResult> CreateUserAsync(User user, string password);
         Task<(IdentityResult, User?, string? password)> ResetPasswordAsync(Guid id, string? password = null);
+        Task<IdentityResult> ChangePhoneNumAsync(Guid id, string phoneNum);
         Task<IdentityResult> ChangePasswordAsync(Guid id, string password);
         Task<bool> CheckPasswordAsync(User user, string password);
         Task<bool> IsLockedOutAsync(User user);

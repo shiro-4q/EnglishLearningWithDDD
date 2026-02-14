@@ -11,7 +11,7 @@ namespace IdentityService.Domain.Entities
 
         public DateTime? DeletionTime { get; private set; }
 
-        public User()
+        public User(string userName) : base(userName)
         {
             Id = Guid.CreateVersion7();
             CreationTime = DateTime.Now;

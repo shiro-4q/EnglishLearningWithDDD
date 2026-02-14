@@ -60,21 +60,26 @@ namespace IdentityService.Infrastructure.Repositories
             return userManager.IsLockedOutAsync(user);
         }
 
+        public async Task<IdentityResult> ChangePhoneNumAsync(Guid id, string phoneNum)
+        {
+            var user = await FindByIdAsync(id);
+            if (user == null)
+                return IdentityResult.Failed(new IdentityError { Description = "用户没找到" });
+            string token = await userManager.GenerateChangePhoneNumberTokenAsync(user, phoneNum);
+            return await userManager.ChangePhoneNumberAsync(user, phoneNum, token);
+        }
+
         public async Task<(IdentityResult, User?, string? password)> ResetPasswordAsync(Guid id, string? password = null)
         {
             var user = await FindByIdAsync(id);
             if (user == null)
-            {
                 return (IdentityResult.Failed(new IdentityError { Description = "用户没找到" }), null, null);
-            }
             if (string.IsNullOrWhiteSpace(password))
                 password = GeneratePassword();
             string token = await userManager.GeneratePasswordResetTokenAsync(user);
             var result = await userManager.ResetPasswordAsync(user, token, password);
             if (!result.Succeeded)
-            {
                 return (result, null, null);
-            }
             return (IdentityResult.Success, user, password);
         }
 

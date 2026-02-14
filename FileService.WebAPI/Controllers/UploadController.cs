@@ -1,6 +1,7 @@
 ﻿using FileService.Domain.Services;
 using FileService.Infrastructure.Persistence;
 using FileService.WebAPI.DTOs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Q.Infrastructure.Filters;
 
@@ -8,6 +9,7 @@ namespace FileService.WebAPI.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
+    [Authorize(Roles = "Admin")]
     public class UploadController(FSDomainService fSDomainService) : ControllerBase
     {
         private readonly FSDomainService _fSDomainService = fSDomainService;

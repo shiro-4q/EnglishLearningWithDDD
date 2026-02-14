@@ -1,16 +1,12 @@
 ﻿using IdentityService.Domain.Entities;
-using MediatR;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Q.Infrastructure.EFCore;
 using System.Reflection;
 
 namespace IdentityService.Infrastructure.Persistence
 {
-    public class IdDbContext(DbContextOptions options, IMediator? mediator) : BaseDbContext(options, mediator)
+    public class IdDbContext(DbContextOptions<IdDbContext> options) : IdentityDbContext<User, Role, Guid>(options)
     {
-        public DbSet<User> Users { get; set; }
-        public DbSet<Role> Roles { get; set; }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

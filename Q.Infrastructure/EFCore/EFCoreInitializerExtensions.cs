@@ -8,13 +8,13 @@ namespace Q.Infrastructure.EFCore
     {
         public static IServiceCollection AddAllDbContexts(this IServiceCollection services, Action<DbContextOptionsBuilder>? optionsAction, IEnumerable<Assembly> assemblies)
         {
-            // 获取所有继承自BaseDbContext的类型
+            // 获取所有继承自DbContext的类型
             var dbContextTypes = assemblies
                 .SelectMany(a => a.GetTypes())
                 .Where(t =>
                     t is not null &&
                     !t.IsAbstract &&
-                    typeof(BaseDbContext).IsAssignableFrom(t)).ToList();
+                    typeof(DbContext).IsAssignableFrom(t)).ToList();
 
             // 获取AddDbContext方法信息
             Type[] types = [typeof(IServiceCollection), typeof(Action<DbContextOptionsBuilder>), typeof(ServiceLifetime), typeof(ServiceLifetime)];
