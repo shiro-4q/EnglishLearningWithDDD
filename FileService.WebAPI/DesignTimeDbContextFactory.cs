@@ -1,8 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore.Design;
-using Microsoft.Extensions.Configuration;
+﻿using FileService.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore.Design;
 using Q.Initializer;
 
-namespace FileService.Infrastructure.Persistence;
+namespace FileService.WebAPI;
 
 public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<FSDbContext>
 {

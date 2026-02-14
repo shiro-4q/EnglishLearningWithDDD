@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Design;
 using Q.Initializer;
 
-namespace FileService.Infrastructure.Persistence;
+namespace IdentityService.WebAPI;
 
 public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<IdDbContext>
 {
