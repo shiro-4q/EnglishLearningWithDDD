@@ -7,7 +7,7 @@
         public DateTime? DeletionTime { get; private set; }
         public DateTime? LastModificationTime { get; private set; }
 
-        public void SoftDelete()
+        public virtual void SoftDelete()
         {
             IsDeleted = true;
             DeletionTime = DateTime.Now;

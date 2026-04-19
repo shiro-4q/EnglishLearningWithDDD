@@ -2,7 +2,7 @@
 using FileService.Domain.Interfaces;
 using Q.Commons;
 
-namespace FileService.Infrastructure.Adapters
+namespace FileService.Infrastructure.Services
 {
     /// <summary>
     /// 存储文件到wwwroot目录的存储客户端，主要用于测试和开发环境，生产环境不应该使用它

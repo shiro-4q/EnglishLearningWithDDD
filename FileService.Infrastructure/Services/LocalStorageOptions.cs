@@ -1,4 +1,4 @@
-﻿namespace FileService.Infrastructure.Adapters
+﻿namespace FileService.Infrastructure.Services
 {
     public class LocalStorageOptions
     {

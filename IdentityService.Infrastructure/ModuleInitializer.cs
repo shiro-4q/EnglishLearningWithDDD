@@ -1,6 +1,5 @@
 ﻿using IdentityService.Domain.Interfaces;
 using IdentityService.Domain.Repositories;
-using IdentityService.Domain.Services;
 using IdentityService.Infrastructure.Repositories;
 using IdentityService.Infrastructure.Services;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,7 +14,6 @@ namespace IdentityService.Infrastructure
             services.AddScoped<ISmsSender, MockSmsSender>();
             services.AddScoped<IEmailSender, MockEmailSender>();
             services.AddScoped<IIdRepository, IdRepository>();
-            services.AddScoped<IdDomainService>();
         }
     }
 }

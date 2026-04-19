@@ -1,5 +1,5 @@
-using FileService.Infrastructure.Adapters;
 using FileService.Infrastructure.Persistence;
+using FileService.Infrastructure.Services;
 using Q.Initializer;
 
 var builder = WebApplication.CreateBuilder(args);
