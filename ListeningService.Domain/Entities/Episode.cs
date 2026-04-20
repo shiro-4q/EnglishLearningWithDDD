@@ -1,5 +1,7 @@
 ﻿using ListeningService.Domain.Events;
+using ListeningService.Domain.ValueObjects;
 using Q.DomainCommons.Models;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ListeningService.Domain.Entities
 {
@@ -15,6 +17,8 @@ namespace ListeningService.Domain.Entities
         public double DurationInSecond { get; private set; }
         public Uri AudioUrl { get; private set; }
         public bool IsVisible { get; private set; }
+        [NotMapped]
+        public IEnumerable<Sentence> Sentences { get; private set; }
 
         private Episode() { }
 
@@ -23,30 +27,30 @@ namespace ListeningService.Domain.Entities
             Name = name;
             this.AddDomainEventsIfAbsent(new EpisodeUpdatedEvent(this));
         }
-
         public void ChangeSequenceNumber(int sequenceNumber)
         {
             SequenceNumber = sequenceNumber;
             this.AddDomainEventsIfAbsent(new EpisodeUpdatedEvent(this));
         }
-
         public void ChangeSubtitle(string subtitle, string subtitleType)
         {
             Subtitle = subtitle;
             SubtitleType = subtitleType;
             this.AddDomainEventsIfAbsent(new EpisodeUpdatedEvent(this));
         }
-
         public void Show()
         {
             IsVisible = true;
             this.AddDomainEventsIfAbsent(new EpisodeUpdatedEvent(this));
         }
-
         public void Hide()
         {
             IsVisible = false;
             this.AddDomainEventsIfAbsent(new EpisodeUpdatedEvent(this));
+        }
+        public void SetSentences(IEnumerable<Sentence> sentences)
+        {
+            Sentences = sentences;
         }
 
         public override void SoftDelete()

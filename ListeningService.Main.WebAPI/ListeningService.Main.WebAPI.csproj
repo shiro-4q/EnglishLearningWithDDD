@@ -7,13 +7,23 @@
   </PropertyGroup>
 
   <ItemGroup>
-	<PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="10.1.0" />
-	<PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="10.1.0" />
+    <Compile Remove="wwwroot\**" />
+    <Content Remove="wwwroot\**" />
+    <EmbeddedResource Remove="wwwroot\**" />
+    <None Remove="wwwroot\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="DTOs\" />
-    <Folder Include="wwwroot\" />
+	  <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.9">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	  </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ListeningService.Domain\ListeningService.Domain.csproj" />
+    <ProjectReference Include="..\ListeningService.Infrastructure\ListeningService.Infrastructure.csproj" />
+    <ProjectReference Include="..\Q.Initializer\Q.Initializer.csproj" />
   </ItemGroup>
 
 </Project>

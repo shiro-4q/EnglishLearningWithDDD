@@ -16,4 +16,10 @@
     <Folder Include="wwwroot\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ListeningService.Domain\ListeningService.Domain.csproj" />
+    <ProjectReference Include="..\ListeningService.Infrastructure\ListeningService.Infrastructure.csproj" />
+    <ProjectReference Include="..\Q.Initializer\Q.Initializer.csproj" />
+  </ItemGroup>
+
 </Project>

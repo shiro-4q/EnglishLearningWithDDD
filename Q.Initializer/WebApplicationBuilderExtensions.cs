@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Q.Commons;
 using Q.Commons.Helper;
 using Q.Commons.ModuleInitializer;
+using Q.Infrastructure.Cache;
 using Q.Infrastructure.EFCore;
 using Q.Infrastructure.Filters;
 using Q.Swagger;
@@ -95,6 +96,9 @@ namespace Q.Initializer
             string redisConnStr = configuration.GetValue<string>("Redis:ConnectionString")!;
             ConnectionMultiplexer connectionMultiplexer = ConnectionMultiplexer.Connect(redisConnStr);
             services.AddSingleton<IConnectionMultiplexer>(connectionMultiplexer);
+
+            // 注册缓存
+            services.AddScoped<ICache, RedisCache>();
             return builder;
         }
     }

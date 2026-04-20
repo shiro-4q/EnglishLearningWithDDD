@@ -1,29 +1,43 @@
-using Microsoft.OpenApi;
+using FileService.Infrastructure.Persistence;
+using Q.Initializer;
 
 var builder = WebApplication.CreateBuilder(args);
-
+// 注册额外服务
+var initializerOptions = new InitializerOptions
+{
+    SwaggerTitle = "ListeningService.API V1"
+};
+builder.ConfigureExtraServices(initializerOptions);
 // Add services to the container.
 builder.Services.AddControllers();
-builder.Services.AddSwaggerGen(options =>
+
+builder.Services.AddCap(x =>
 {
-    options.SwaggerDoc("v1", new OpenApiInfo { Title = "ListeningService.Main.API", Version = "v1" });
+    // Outbox + 事务控制
+    x.UseEntityFramework<LSDbContext>();
+
+    // EventBus 使用 RabbitMQ
+    x.UseRabbitMQ(opt =>
+    {
+        opt.HostName = "localhost";      // RabbitMQ 服务器地址
+        opt.UserName = "rmquser";        // 登录用户名
+        opt.Password = "rmqpassword";    // 登录密码
+        opt.Port = 5672;                 // RabbitMQ 服务端口（5672 是默认 AMQP 端口）
+        opt.ExchangeName = "FileService";
+    });
+
+    // 重试配置
+    x.FailedRetryCount = 5;
+    x.FailedRetryInterval = 30;
 });
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI(options =>
-    {
-        options.SwaggerEndpoint("v1/swagger.json", "ListeningService.Main.API V1");
-    });
-}
-
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
+// 使用额外中间件
+app.UseExtraMiddleware(initializerOptions);
 
 app.MapControllers();
 

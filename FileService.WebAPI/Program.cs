@@ -24,6 +24,7 @@ builder.Services.AddCap(x =>
         opt.UserName = "rmquser";        // 登录用户名
         opt.Password = "rmqpassword";    // 登录密码
         opt.Port = 5672;                 // RabbitMQ 服务端口（5672 是默认 AMQP 端口）
+        opt.ExchangeName = "FileService";
     });
 
     // 重试配置
