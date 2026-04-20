@@ -14,7 +14,9 @@ namespace ListeningService.Domain.Services
         public async Task<Category> AddCategoryAsync(MultilingualString name, Uri converUrl)
         {
             var maxSeq = await _repository.GetMaxSeqOfCategoriesAsync();
-            return new Category(name, maxSeq + 1, converUrl);
+            var category = new Category(name, maxSeq + 1, converUrl);
+            await _repository.AddCategoryAsync(category);
+            return category;
         }
 
         public async Task SortCategoriesAsync(Guid[] guids)
@@ -36,7 +38,9 @@ namespace ListeningService.Domain.Services
         public async Task<Album> AddAlbumAsync(Guid categoryId, MultilingualString name, Uri converUrl)
         {
             var maxSeq = await _repository.GetMaxSeqOfAlbumsAsync(categoryId);
-            return new Album(name, maxSeq + 1, categoryId);
+            var album = new Album(name, maxSeq + 1, categoryId);
+            await _repository.AddAlbumAsync(album);
+            return album;
         }
 
         public async Task SortAlbumsAsync(Guid categoryId, Guid[] guids)
@@ -61,7 +65,9 @@ namespace ListeningService.Domain.Services
             builder.SequenceNumber(maxSeq + 1).Name(name).AlbumId(albumId)
                 .AudioUrl(audioUrl).DurationInSecond(durationInSecond)
                 .Subtitle(subtitle).SubtitleType(subtitleType);
-            return builder.Build();
+            var episode = builder.Build();
+            await _repository.AddEpisodeAsync(episode);
+            return episode;
         }
 
         public async Task SortEpisodesAsync(Guid albumId, Guid[] guids)

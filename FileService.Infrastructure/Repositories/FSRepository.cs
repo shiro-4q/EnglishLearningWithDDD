@@ -19,10 +19,5 @@ namespace FileService.Infrastructure.Repositories
             _dbContext.UploadItems.Add(uploadItem);
             return Task.CompletedTask;
         }
-
-        public Task SaveChangesAsync()
-        {
-            return _dbContext.SaveChangesAsync();
-        }
     }
 }

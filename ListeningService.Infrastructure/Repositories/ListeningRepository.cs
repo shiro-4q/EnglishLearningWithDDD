@@ -25,6 +25,12 @@ namespace ListeningService.Infrastructure.Repositories
             return _dbContext.Categories.MaxAsync(c => c.SequenceNumber);
         }
 
+        public Task AddCategoryAsync(Category category)
+        {
+            _dbContext.Categories.Add(category);
+            return Task.CompletedTask;
+        }
+
         public async Task<Album?> GetAlbumByIdAsync(Guid albumId)
         {
             var album = await _dbContext.Albums.FindAsync(albumId);
@@ -41,6 +47,12 @@ namespace ListeningService.Infrastructure.Repositories
             return _dbContext.Albums.Where(x => x.CategoryId == categoryId).MaxAsync(x => x.SequenceNumber);
         }
 
+        public Task AddAlbumAsync(Album album)
+        {
+            _dbContext.Albums.Add(album);
+            return Task.CompletedTask;
+        }
+
         public async Task<Episode?> GetEpisodeByIdAsync(Guid episodeId)
         {
             var episode = await _dbContext.Episodes.FindAsync(episodeId);
@@ -55,6 +67,12 @@ namespace ListeningService.Infrastructure.Repositories
         public Task<int> GetMaxSeqOfEpisodesAsync(Guid albumId)
         {
             return _dbContext.Episodes.Where(x => x.AlbumId == albumId).MaxAsync(x => x.SequenceNumber);
+        }
+
+        public Task AddEpisodeAsync(Episode episode)
+        {
+            _dbContext.Episodes.Add(episode);
+            return Task.CompletedTask;
         }
     }
 }

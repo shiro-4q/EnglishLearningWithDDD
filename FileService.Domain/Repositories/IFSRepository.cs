@@ -7,7 +7,5 @@ namespace FileService.Domain.Repositories
         Task<UploadItem?> FindAsync(long fileSize, string fileSHA256Hash);
 
         Task AddAsync(UploadItem uploadItem);
-
-        Task SaveChangesAsync();
     }
 }
