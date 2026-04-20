@@ -18,7 +18,7 @@ namespace ListeningService.Main.WebAPI.Controllers
         public async Task<ActionResult<AlbumVM[]>> FindAllByCategoryId(Guid categoryId)
         {
             var albums = await _cache.GetOrCreateAsync($"AlbumController.FindAllByCategoryId.{categoryId}",
-                async () => AlbumVM.Create(await _repository.GetAlbumsByCategoryIdAsync(categoryId)));
+                async () => AlbumVM.Create(await _repository.GetVisibleAlbumsByCategoryIdAsync(categoryId)));
             return albums;
         }
 

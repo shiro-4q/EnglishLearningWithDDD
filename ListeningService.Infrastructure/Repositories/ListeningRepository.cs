@@ -39,7 +39,12 @@ namespace ListeningService.Infrastructure.Repositories
 
         public Task<Album[]> GetAlbumsByCategoryIdAsync(Guid categoryId)
         {
-            return _dbContext.Albums.Where(x => x.CategoryId == categoryId).ToArrayAsync();
+            return _dbContext.Albums.Where(x => x.CategoryId == categoryId).OrderBy(x => x.SequenceNumber).ToArrayAsync();
+        }
+
+        public Task<Album[]> GetVisibleAlbumsByCategoryIdAsync(Guid categoryId)
+        {
+            return _dbContext.Albums.Where(x => x.CategoryId == categoryId && x.IsVisible).OrderBy(x => x.SequenceNumber).ToArrayAsync();
         }
 
         public Task<int> GetMaxSeqOfAlbumsAsync(Guid categoryId)
@@ -61,7 +66,12 @@ namespace ListeningService.Infrastructure.Repositories
 
         public Task<Episode[]> GetEpisodesByAlbumIdAsync(Guid albumId)
         {
-            return _dbContext.Episodes.Where(x => x.AlbumId == albumId).ToArrayAsync();
+            return _dbContext.Episodes.Where(x => x.AlbumId == albumId).OrderBy(x => x.SequenceNumber).ToArrayAsync();
+        }
+
+        public Task<Episode[]> GetVisibleEpisodesByAlbumIdAsync(Guid albumId)
+        {
+            return _dbContext.Episodes.Where(x => x.AlbumId == albumId && x.IsVisible).OrderBy(x => x.SequenceNumber).ToArrayAsync();
         }
 
         public Task<int> GetMaxSeqOfEpisodesAsync(Guid albumId)

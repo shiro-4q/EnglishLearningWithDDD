@@ -35,7 +35,7 @@ namespace ListeningService.Domain.Services
             }
         }
 
-        public async Task<Album> AddAlbumAsync(Guid categoryId, MultilingualString name, Uri converUrl)
+        public async Task<Album> AddAlbumAsync(Guid categoryId, MultilingualString name)
         {
             var maxSeq = await _repository.GetMaxSeqOfAlbumsAsync(categoryId);
             var album = new Album(name, maxSeq + 1, categoryId);

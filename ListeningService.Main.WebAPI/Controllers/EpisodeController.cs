@@ -22,7 +22,7 @@ namespace ListeningService.Main.WebAPI.Controllers
             // 写到单独的local函数的好处是避免回调中代码太复杂
             async Task<Episode[]> FindData()
             {
-                var episodes = await _repository.GetEpisodesByAlbumIdAsync(albumId);
+                var episodes = await _repository.GetVisibleEpisodesByAlbumIdAsync(albumId);
                 foreach (var episode in episodes)
                 {
                     episode.SetSentences(_domainService.ParseSubtitle(episode));

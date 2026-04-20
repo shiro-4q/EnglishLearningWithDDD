@@ -1,8 +1,6 @@
 ﻿using ListeningService.Admin.WebAPI.DTOs.Requests;
 using ListeningService.Domain.Repositories;
 using ListeningService.Domain.Services;
-using ListeningService.Infrastructure.Persistence;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Q.Infrastructure.Filters;
 
@@ -37,8 +35,41 @@ namespace ListeningService.Admin.WebAPI.Controllers
         }
 
         [HttpPost]
+        public async Task<ActionResult<Category>> Add(CategoryAddRequest request)
+        {
+            var category = await _domainService.AddCategoryAsync(request.Name, request.CoverUrl);
+            return category;
+        }
+
+        [HttpPost]
         public async Task<ActionResult> Update(CategoryUpdateRequest request)
         {
+            var category = await _repository.GetCategoryByIdAsync(request.CategoryId);
+            if (category == null)
+            {
+                return NotFound();
+            }
+            category.ChangeName(request.Name);
+            category.ChangeCoverUrl(request.CoverUrl);
+            return Ok();
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> DeleteById(Guid categoryId)
+        {
+            var category = await _repository.GetCategoryByIdAsync(categoryId);
+            if (category == null)
+            {
+                return NotFound();
+            }
+            category.SoftDelete();
+            return Ok();
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> SortCategoriesByIds(CategorySortRequest request)
+        {
+            await _domainService.SortCategoriesAsync(request.CategoryIds);
             return Ok();
         }
     }
