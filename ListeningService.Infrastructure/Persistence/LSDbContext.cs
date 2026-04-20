@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Q.Infrastructure.EFCore;
 using System.Reflection;
 
-namespace FileService.Infrastructure.Persistence
+namespace ListeningService.Infrastructure.Persistence
 {
     public class LSDbContext(DbContextOptions<LSDbContext> options, IMediator? mediator) : BaseDbContext(options, mediator)
     {

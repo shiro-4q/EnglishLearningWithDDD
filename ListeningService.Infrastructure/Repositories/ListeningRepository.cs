@@ -1,5 +1,5 @@
-﻿using FileService.Infrastructure.Persistence;
-using ListeningService.Domain.Repositories;
+﻿using ListeningService.Domain.Repositories;
+using ListeningService.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
 namespace ListeningService.Infrastructure.Repositories
