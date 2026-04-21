@@ -60,6 +60,8 @@ namespace ListeningService.Domain.Services
 
         public async Task<Episode> AddEpisodeAsync(Guid albumId, MultilingualString name, Uri audioUrl, double durationInSecond, string subtitle, string subtitleType)
         {
+            if (!CanParseSubtitle(subtitleType))
+                throw new Exception($"不支持{subtitleType}字幕类型");
             var maxSeq = await _repository.GetMaxSeqOfAlbumsAsync(albumId);
             var builder = new Episode.Builder();
             builder.SequenceNumber(maxSeq + 1).Name(name).AlbumId(albumId)
@@ -85,10 +87,15 @@ namespace ListeningService.Domain.Services
             }
         }
 
+        public bool CanParseSubtitle(string subtitleType)
+        {
+            return _subtitleHelper.CanParse(subtitleType);
+        }
+
         public void ChangeSubtitle(Episode episode, string subtitle, string subtitleType)
         {
-            if (!_subtitleHelper.CanParse(episode.SubtitleType))
-                throw new Exception($"不支持{episode.SubtitleType}字幕类型");
+            if (!CanParseSubtitle(subtitleType))
+                throw new Exception($"不支持{subtitleType}字幕类型");
             episode.ChangeSubtitle(subtitle, subtitleType);
         }
 

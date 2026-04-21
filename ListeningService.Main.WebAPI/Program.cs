@@ -5,7 +5,7 @@ var builder = WebApplication.CreateBuilder(args);
 // 注册额外服务
 var initializerOptions = new InitializerOptions
 {
-    SwaggerTitle = "ListeningService.API V1"
+    SwaggerTitle = "ListeningService.Main.API V1"
 };
 builder.ConfigureExtraServices(initializerOptions);
 // Add services to the container.
@@ -23,7 +23,7 @@ builder.Services.AddCap(x =>
         opt.UserName = "rmquser";        // 登录用户名
         opt.Password = "rmqpassword";    // 登录密码
         opt.Port = 5672;                 // RabbitMQ 服务端口（5672 是默认 AMQP 端口）
-        opt.ExchangeName = "FileService";
+        opt.ExchangeName = "ListeningService.Main";
     });
 
     // 重试配置

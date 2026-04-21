@@ -84,5 +84,10 @@ namespace ListeningService.Infrastructure.Repositories
             _dbContext.Episodes.Add(episode);
             return Task.CompletedTask;
         }
+
+        public Task SaveChangesAsync()
+        {
+            return _dbContext.SaveChangesAsync();
+        }
     }
 }

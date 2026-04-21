@@ -18,5 +18,6 @@ namespace ListeningService.Domain.Repositories
         Task<Episode[]> GetVisibleEpisodesByAlbumIdAsync(Guid albumId);
         Task<int> GetMaxSeqOfEpisodesAsync(Guid albumId);
         Task AddEpisodeAsync(Episode episode);
+        Task SaveChangesAsync();
     }
 }
