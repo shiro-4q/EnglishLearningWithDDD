@@ -51,9 +51,9 @@ namespace ListeningService.Admin.WebAPI.Controllers
                 if (!_domainService.CanParseSubtitle(request.SubtitleType))
                     return BadRequest($"Unsupported subtitle type: {request.SubtitleType}");
                 // 发布集成事件通知转码，等待转码完成后再创建Episode，避免非法数据污染业务数据
-                var eventInfo = new TranscodingEventInfo(Guid.CreateVersion7(), request.Name, request.AlbumId, request.AudioUrl, request.DurationInSecond, request.Subtitle, request.SubtitleType, "m4a", "ListeningService");
+                var eventInfo = new TranscodingEventInfo(request.Name, request.AlbumId, request.AudioUrl, request.DurationInSecond, request.Subtitle, request.SubtitleType, "m4a", "ListeningService");
                 await _eventBus.PublishAsync("transcoding.created", eventInfo);
-                return eventInfo.Id;
+                return Guid.Empty;
             }
         }
 

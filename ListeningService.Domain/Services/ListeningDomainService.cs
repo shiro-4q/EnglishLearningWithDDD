@@ -64,7 +64,7 @@ namespace ListeningService.Domain.Services
                 throw new Exception($"不支持{subtitleType}字幕类型");
             var maxSeq = await _repository.GetMaxSeqOfAlbumsAsync(albumId);
             var builder = new Episode.Builder();
-            builder.SequenceNumber(maxSeq + 1).Name(name).AlbumId(albumId)
+            builder.Id(Guid.CreateVersion7()).SequenceNumber(maxSeq + 1).Name(name).AlbumId(albumId)
                 .AudioUrl(audioUrl).DurationInSecond(durationInSecond)
                 .Subtitle(subtitle).SubtitleType(subtitleType);
             var episode = builder.Build();

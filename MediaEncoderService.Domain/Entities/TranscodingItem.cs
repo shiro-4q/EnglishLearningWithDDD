@@ -1,4 +1,5 @@
 ﻿using MediaEncoderService.Domain.Enums;
+using MediaEncoderService.Domain.Events;
 using Q.DomainCommons.Models;
 
 namespace MediaEncoderService.Domain.Entities
@@ -34,12 +35,32 @@ namespace MediaEncoderService.Domain.Entities
             FileSHA256Hash = fileSHA256Hash;
         }
 
-        public void Complited(Uri outputUrl)
+        public void Complete(Uri outputUrl)
         {
             OutputUrl = outputUrl;
             Status = ItemStatus.Completed;
             Log = "转码完成";
-            //this.AddDomainEventsIfAbsent();
+            this.AddDomainEventsIfAbsent(new TranscodingCompletedEvent(this));
+        }
+
+        public void Fail(string msg)
+        {
+            Status = ItemStatus.Failed;
+            Log = $"转码失败，原因：{msg}";
+            this.AddDomainEventsIfAbsent(new TranscodingFailedEvent(this));
+        }
+
+        public void Fail(Exception ex)
+        {
+            Status = ItemStatus.Failed;
+            Log = $"转码失败，原因：{ex}";
+            this.AddDomainEventsIfAbsent(new TranscodingFailedEvent(this));
+        }
+
+        public void Start()
+        {
+            Status = ItemStatus.Processing;
+            this.AddDomainEventsIfAbsent(new TranscodingStartedEvent(this));
         }
     }
 }
