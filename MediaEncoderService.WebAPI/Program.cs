@@ -1,29 +1,53 @@
 using Microsoft.OpenApi;
 
+using MediaEncoderService.Infrastructure.Persistence;
+using MediaEncoderService.WebAPI.BgServices;
+using Q.Initializer;
+using RedLockNet.SERedis;
+using RedLockNet.SERedis.Configuration;
+using StackExchange.Redis;
+
 var builder = WebApplication.CreateBuilder(args);
+var initializerOptions = new InitializerOptions
+{
+    SwaggerTitle = "MediaEncoderService.API V1"
+};
+builder.ConfigureExtraServices(initializerOptions);
 
 // Add services to the container.
 builder.Services.AddControllers();
-builder.Services.AddSwaggerGen(options =>
+builder.Services.AddHttpClient();
+builder.Services.Configure<TranscodeBgServiceOptions>(builder.Configuration.GetSection("TranscodeBgService"));
+builder.Services.AddSingleton(sp =>
 {
-    options.SwaggerDoc("v1", new OpenApiInfo { Title = "MediaEncoderService.API", Version = "v1" });
+    var connectionMultiplexer = sp.GetRequiredService<IConnectionMultiplexer>();
+    return RedLockFactory.Create([new RedLockMultiplexer(connectionMultiplexer)]);
+});
+builder.Services.AddHostedService<TranscodeBgService>();
+
+builder.Services.AddCap(x =>
+{
+    x.UseEntityFramework<TranscodingDbContext>();
+
+    x.UseRabbitMQ(opt =>
+    {
+        opt.HostName = "localhost";
+        opt.UserName = "rmquser";
+        opt.Password = "rmqpassword";
+        opt.Port = 5672;
+        opt.ExchangeName = "MediaEncoderService";
+    });
+
+    x.FailedRetryCount = 5;
+    x.FailedRetryInterval = 30;
 });
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI(options =>
-    {
-        options.SwaggerEndpoint("v1/swagger.json", "MediaEncoderService.API V1");
-    });
-}
-
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
+app.UseExtraMiddleware(initializerOptions);
 
 app.MapControllers();
 
