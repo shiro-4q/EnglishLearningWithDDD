@@ -4,7 +4,7 @@ using Q.Infrastructure.EFCore;
 
 namespace MediaEncoderService.Infrastructure.Persistence
 {
-    public class TranscodingDbContext(DbContextOptions options, IMediator? mediator) : BaseDbContext(options, mediator)
+    public class TranscodingDbContext(DbContextOptions<TranscodingDbContext> options, IMediator? mediator) : BaseDbContext(options, mediator)
     {
         public DbSet<TranscodingItem> TranscodingItems { get; set; }
 

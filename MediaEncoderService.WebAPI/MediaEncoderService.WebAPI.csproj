@@ -5,19 +5,7 @@
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 	</PropertyGroup>
-
-	<ItemGroup>
-	  <Compile Remove="DTOs\**" />
-	  <Compile Remove="wwwroot\**" />
-	  <Content Remove="DTOs\**" />
-	  <Content Remove="wwwroot\**" />
-	  <EmbeddedResource Remove="DTOs\**" />
-	  <EmbeddedResource Remove="wwwroot\**" />
-	  <None Remove="DTOs\**" />
-	  <None Remove="wwwroot\**" />
-	</ItemGroup>
-
-
+	
 	<ItemGroup>
 		<PackageReference Include="RedLock.net" Version="2.3.2" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.9">
@@ -27,6 +15,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\FileService.WebAPI\FileService.WebAPI.csproj" />
 		<ProjectReference Include="..\MediaEncoderService.Domain\MediaEncoderService.Domain.csproj" />
 		<ProjectReference Include="..\MediaEncoderService.Infrastructure\MediaEncoderService.Infrastructure.csproj" />
 		<ProjectReference Include="..\Q.Initializer\Q.Initializer.csproj" />

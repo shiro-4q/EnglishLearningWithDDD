@@ -1,8 +1,9 @@
-using Microsoft.OpenApi;
+using FileService.WebAPI.Helpers;
 
 using MediaEncoderService.Infrastructure.Persistence;
 using MediaEncoderService.WebAPI.BgServices;
 using Q.Initializer;
+using RedLockNet;
 using RedLockNet.SERedis;
 using RedLockNet.SERedis.Configuration;
 using StackExchange.Redis;
@@ -17,8 +18,9 @@ builder.ConfigureExtraServices(initializerOptions);
 // Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddHttpClient();
+builder.Services.AddScoped<FileServiceUploadHelper>();
 builder.Services.Configure<TranscodeBgServiceOptions>(builder.Configuration.GetSection("TranscodeBgService"));
-builder.Services.AddSingleton(sp =>
+builder.Services.AddSingleton<IDistributedLockFactory>(sp =>
 {
     var connectionMultiplexer = sp.GetRequiredService<IConnectionMultiplexer>();
     return RedLockFactory.Create([new RedLockMultiplexer(connectionMultiplexer)]);

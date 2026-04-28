@@ -11,6 +11,7 @@ var initializerOptions = new InitializerOptions
 builder.ConfigureExtraServices(initializerOptions);
 // Add services to the container.
 builder.Services.AddControllers();
+builder.Services.AddHttpClient();
 
 builder.Services.AddCap(x =>
 {

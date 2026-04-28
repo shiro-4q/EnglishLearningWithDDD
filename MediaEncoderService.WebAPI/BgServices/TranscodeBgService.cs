@@ -1,9 +1,8 @@
+using FileService.WebAPI.Helpers;
 using MediaEncoderService.Domain.Repositories;
 using MediaEncoderService.Domain.Transcoder;
 using Microsoft.Extensions.Options;
 using RedLockNet;
-using System.Net.Http.Headers;
-using System.Security.Cryptography;
 
 namespace MediaEncoderService.WebAPI.BgServices
 {
@@ -14,6 +13,7 @@ namespace MediaEncoderService.WebAPI.BgServices
         private readonly TranscoderFactory _transcoderFactory;
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IDistributedLockFactory _distributedLockFactory;
+        private readonly FileServiceUploadHelper _fileServiceUploadHelper;
         private readonly TranscodeBgServiceOptions _options;
         private readonly ILogger<TranscodeBgService> _logger;
 
@@ -28,67 +28,62 @@ namespace MediaEncoderService.WebAPI.BgServices
             _options = options.Value;
             _distributedLockFactory = distributedLockFactory;
             _httpClientFactory = httpClientFactory;
+            // BgService是使用Singleton生命周期注册的，如果直接注入Scoped和Transient生命周期的服务，会导致生命周期不匹配
+            // 所以需要创建一个scope来获取Scoped和Transient生命周期服务
             _scope = scopeFactory.CreateScope();
             _repository = _scope.ServiceProvider.GetRequiredService<ITranscodingRepository>();
             _transcoderFactory = _scope.ServiceProvider.GetRequiredService<TranscoderFactory>();
+            _fileServiceUploadHelper = _scope.ServiceProvider.GetRequiredService<FileServiceUploadHelper>();
         }
 
+        /// <summary>
+        /// 下载源文件到本地工作目录
+        /// </summary>
         private async Task<FileInfo> DownloadOriginalFileAsync(TranscodingItem item, CancellationToken ct)
         {
             var httpClient = _httpClientFactory.CreateClient();
-            using var response = await httpClient.GetAsync(item.SourceUrl, HttpCompletionOption.ResponseHeadersRead, ct);
-            response.EnsureSuccessStatusCode();
-
             var fileExtension = Path.GetExtension(item.SourceUrl.LocalPath);
             var filePath = Path.Combine(GetWorkingDirectory(), $"{item.Id:N}-source{fileExtension}");
-            await using var sourceStream = await response.Content.ReadAsStreamAsync(ct);
-            await using var fileStream = File.Create(filePath);
-            await sourceStream.CopyToAsync(fileStream, ct);
-            await fileStream.FlushAsync(ct);
-
+            await httpClient.DownloadFileAsync(item.SourceUrl, filePath, ct);
             return new FileInfo(filePath);
         }
 
+        /// <summary>
+        /// 把本地文件转码成目标格式
+        /// </summary>
         private async Task<FileInfo> TranscodeFileAsync(TranscodingItem item, FileInfo sourceFile, TranscoderFactory transcoderFactory, CancellationToken ct)
         {
             var outputFileName = $"{Path.GetFileNameWithoutExtension(item.Name)}-{item.Id:N}.{item.OutputFormat.TrimStart('.')}";
-            var outputFile = new FileInfo(Path.Combine(GetWorkingDirectory(), outputFileName));
+            var outputPath = Path.Combine(GetWorkingDirectory(), outputFileName);
+            var outputFile = new FileInfo(outputPath);
             await transcoderFactory.TranscodeAsync(sourceFile, outputFile, item.OutputFormat, null, ct);
             return outputFile;
         }
 
-        private async Task<Uri> UploadTranscodedFileAsync(FileInfo outputFile, CancellationToken ct)
+        /// <summary>
+        /// 上传转码后的文件到FileService
+        /// </summary>
+        private Task<Uri> UploadTranscodedFileAsync(FileInfo outputFile, CancellationToken ct)
         {
             if (_options.FileServiceUploadUrl == null)
             {
                 throw new InvalidOperationException("FileService upload url is not configured.");
             }
 
-            var httpClient = _httpClientFactory.CreateClient();
-            using var request = new HttpRequestMessage(HttpMethod.Post, _options.FileServiceUploadUrl);
-            if (!string.IsNullOrWhiteSpace(_options.FileServiceAccessToken))
-            {
-                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _options.FileServiceAccessToken);
-            }
-
-            await using var fileStream = outputFile.OpenRead();
-            using var content = new MultipartFormDataContent();
-            content.Add(new StreamContent(fileStream), "File", outputFile.Name);
-            request.Content = content;
-
-            using var response = await httpClient.SendAsync(request, ct);
-            response.EnsureSuccessStatusCode();
-            var uploadUrl = await response.Content.ReadAsStringAsync(ct);
-            return new Uri(uploadUrl.Trim('"'));
+            return _fileServiceUploadHelper.UploadAsync(_options.FileServiceUploadUrl, outputFile, ct);
         }
 
+        /// <summary>
+        /// 处理单个转码任务
+        /// </summary>
         private async Task ProcessItemAsync(TranscodingItem item, ITranscodingRepository repository, TranscoderFactory transcoderFactory, CancellationToken ct)
         {
             if (!transcoderFactory.CanTranscode(item.OutputFormat))
             {
                 throw new NotSupportedException($"No transcoder found for format: {item.OutputFormat}");
             }
-
+            // Redis分布式锁来避免两个转码服务器处理同一个转码任务的问题
+            // 用RedLock分布式锁，锁定对TranscodingItem的访问
             await using var redLock = await _distributedLockFactory.CreateLockAsync(
                 $"MediaEncoderService:TranscodingItem:{item.Id}",
                 _options.LockExpiry,
@@ -97,7 +92,8 @@ namespace MediaEncoderService.WebAPI.BgServices
                 ct);
             if (!redLock.IsAcquired)
             {
-                return;
+                //获得锁失败，锁已经被别人抢走了，说明这个任务被别的实例处理了（有可能有服务器集群来分担转码压力）
+                return;//再去抢下一个
             }
 
             FileInfo? sourceFile = null;
@@ -105,16 +101,29 @@ namespace MediaEncoderService.WebAPI.BgServices
             try
             {
                 item.Start();
-                await repository.SaveChangesAsync(ct);
+                await repository.SaveChangesAsync(ct);// 立即保存一次，把事件发布出去，这样外部系统就能知道转码任务开始了
+                _logger.LogInformation("Started processing item {ItemId}.", item.Id);
 
                 sourceFile = await DownloadOriginalFileAsync(item, ct);
-                var (sourceFileSize, sourceFileHash) = await GetFileMetadataAsync(sourceFile, ct);
-                item.ChangeFileMetadata(sourceFileSize, sourceFileHash);
-                await repository.SaveChangesAsync(ct);
+                var sourceFileSize = sourceFile.Length;
+                await using (var sourceStream = sourceFile.OpenRead())
+                {
+                    var sourceFileHash = HashHelper.ComputeSha256Hash(sourceStream);
+                    item.ChangeFileMetadata(sourceFileSize, sourceFileHash);
+
+                    var completedItem = await repository.FindCompletedByHashAsync(sourceFileHash, sourceFileSize);
+                    if (completedItem?.OutputUrl != null)
+                    {
+                        item.Complete(completedItem.OutputUrl);
+                        _logger.LogInformation("Item {ItemId} completed.", item.Id);
+                        return;
+                    }
+                }
 
                 outputFile = await TranscodeFileAsync(item, sourceFile, transcoderFactory, ct);
                 var outputUrl = await UploadTranscodedFileAsync(outputFile, ct);
                 item.Complete(outputUrl);
+                _logger.LogInformation("Item {ItemId} completed.", item.Id);
             }
             finally
             {
@@ -123,14 +132,9 @@ namespace MediaEncoderService.WebAPI.BgServices
             }
         }
 
-        private static async Task<(long FileSizeInBytes, string FileSHA256Hash)> GetFileMetadataAsync(FileInfo file, CancellationToken ct)
-        {
-            await using var stream = file.OpenRead();
-            var hashBytes = await SHA256.HashDataAsync(stream, ct);
-            var hash = Convert.ToHexString(hashBytes).ToLowerInvariant();
-            return (file.Length, hash);
-        }
-
+        /// <summary>
+        /// 删除临时文件
+        /// </summary>
         private static void DeleteFileIfExists(FileInfo? file)
         {
             file?.Refresh();
@@ -140,6 +144,9 @@ namespace MediaEncoderService.WebAPI.BgServices
             }
         }
 
+        /// <summary>
+        /// 获取本地工作目录
+        /// </summary>
         private string GetWorkingDirectory()
         {
             var workingDirectory = string.IsNullOrWhiteSpace(_options.WorkingDirectory)
@@ -149,6 +156,9 @@ namespace MediaEncoderService.WebAPI.BgServices
             return workingDirectory;
         }
 
+        /// <summary>
+        /// 定时扫描并执行待处理的转码任务
+        /// </summary>
         protected override async Task ExecuteAsync(CancellationToken ct)
         {
             while (!ct.IsCancellationRequested)
@@ -167,21 +177,15 @@ namespace MediaEncoderService.WebAPI.BgServices
                     }
                     await _repository.SaveChangesAsync(ct);
                 }
-                await Task.Delay(_options.RestInterval, ct);
+                await Task.Delay(_options.RestInterval, ct);// 设置置扫描间隔，避免频繁查询数据库造成数据库和cpu压力
             }
         }
-    }
 
-    public class TranscodeBgServiceOptions
-    {
-        public int RestSeconds { get; set; } = 30;
-        public string? WorkingDirectory { get; set; }
-        public Uri? FileServiceUploadUrl { get; set; }
-        public string? FileServiceAccessToken { get; set; }
-        public TimeSpan LockExpiry { get; set; } = TimeSpan.FromMinutes(30);
-        public TimeSpan LockWait { get; set; } = TimeSpan.Zero;
-        public TimeSpan LockRetry { get; set; } = TimeSpan.FromSeconds(1);
-        public TimeSpan RestInterval => TimeSpan.FromSeconds(RestSeconds);
-    }
+        public override void Dispose()
+        {
+            base.Dispose();
+            _scope.Dispose();
+        }
 
+    }
 }

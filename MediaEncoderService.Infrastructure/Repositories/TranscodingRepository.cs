@@ -14,9 +14,13 @@ namespace MediaEncoderService.Infrastructure.Repositories
             return _dbContext.TranscodingItems.Where(t => t.Status == status).ToArrayAsync();
         }
 
-        public Task<TranscodingItem?> FindOneByHashAsync(string fileSHA256Hash, long fileSizeInBytes)
+        public Task<TranscodingItem?> FindCompletedByHashAsync(string fileSHA256Hash, long fileSizeInBytes)
         {
-            return _dbContext.TranscodingItems.FirstOrDefaultAsync(t => t.FileSHA256Hash == fileSHA256Hash && t.FileSizeInBytes == fileSizeInBytes);
+            return _dbContext.TranscodingItems.FirstOrDefaultAsync(t =>
+                t.FileSHA256Hash == fileSHA256Hash
+                && t.FileSizeInBytes == fileSizeInBytes
+                && t.Status == ItemStatus.Completed
+                && t.OutputUrl != null);
         }
 
         public async Task<TranscodingItem?> GetByIdAsync(Guid id)
