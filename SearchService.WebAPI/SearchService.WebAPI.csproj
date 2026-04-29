@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
@@ -7,13 +7,21 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\**" />
+    <Content Remove="wwwroot\**" />
+    <EmbeddedResource Remove="wwwroot\**" />
+    <None Remove="wwwroot\**" />
+  </ItemGroup>
+
+  <ItemGroup>
 	<PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="10.1.0" />
 	<PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="10.1.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="DTOs\" />
-    <Folder Include="wwwroot\" />
+    <ProjectReference Include="..\Q.Initializer\Q.Initializer.csproj" />
+    <ProjectReference Include="..\SearchService.Domain\SearchService.Domain.csproj" />
+    <ProjectReference Include="..\SearchService.Infrastructure\SearchService.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

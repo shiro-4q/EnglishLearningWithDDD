@@ -7,10 +7,24 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Adapters\" />
-    <Folder Include="Configs\" />
-    <Folder Include="Persistence\" />
-    <Folder Include="Repositories\" />
+    <Compile Remove="Adapters\**" />
+    <Compile Remove="Configs\**" />
+    <Compile Remove="Persistence\**" />
+    <EmbeddedResource Remove="Adapters\**" />
+    <EmbeddedResource Remove="Configs\**" />
+    <EmbeddedResource Remove="Persistence\**" />
+    <None Remove="Adapters\**" />
+    <None Remove="Configs\**" />
+    <None Remove="Persistence\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Elastic.Clients.Elasticsearch" Version="9.3.6" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Q.Initializer\Q.Initializer.csproj" />
+    <ProjectReference Include="..\SearchService.Domain\SearchService.Domain.csproj" />
   </ItemGroup>
 
 </Project>
