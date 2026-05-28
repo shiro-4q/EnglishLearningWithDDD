@@ -32,7 +32,7 @@ namespace SearchService.Infrastructure.Repositories
                 .From(from)
                 .Size(pageSize)
                 .Query(q => q
-                    .MultiMatch(m => m
+                    .MultiMatch(m => m // 多字段匹配
                         .Fields(f => f.ChineseName, f => f.EnglishName, f => f.PlainSubtitle)
                         .Query(keyword)
                         .Type(TextQueryType.BestFields)// BestFields 多个字段中取最佳字段得分
